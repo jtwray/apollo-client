@@ -1620,7 +1620,7 @@ describe('useQuery Hook', () => {
         );
 
         const { result, waitForNextUpdate } = renderHook(
-          () => useQuery(query, {
+          () => useQuery1(query, {
             variables: { min: 0, max: 12 },
             notifyOnNetworkStatusChange: true,
             // This is the key line in this test.
@@ -1701,7 +1701,7 @@ describe('useQuery Hook', () => {
         );
 
         const { result, waitForNextUpdate } = renderHook(
-          () => useQuery(query, {
+          () => useQuery1(query, {
             variables: { min: 0, max: 12 },
             notifyOnNetworkStatusChange: true,
             // This is the key line in this test.
@@ -1787,7 +1787,7 @@ describe('useQuery Hook', () => {
         );
 
         const { result, waitForNextUpdate } = renderHook(
-          () => useQuery(query, {
+          () => useQuery1(query, {
             variables: { min: 0, max: 12 },
             notifyOnNetworkStatusChange: true,
             // Intentionally not passing refetchWritePolicy.
@@ -1864,7 +1864,7 @@ describe('useQuery Hook', () => {
 
       const onCompleted = jest.fn();
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(query, {
+        () => useQuery1(query, {
           fetchPolicy: 'cache-only',
           onCompleted,
         }),
@@ -1897,7 +1897,7 @@ describe('useQuery Hook', () => {
 
       const onCompleted = jest.fn();
       const { result, rerender, waitForNextUpdate } = renderHook(
-        () => useQuery(query, {
+        () => useQuery1(query, {
           onCompleted,
         }),
         { wrapper },
@@ -1971,7 +1971,7 @@ describe('useQuery Hook', () => {
 
       const onCompleted = jest.fn();
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(query, {
+        () => useQuery1(query, {
           fetchPolicy: 'network-only',
           onCompleted,
         }),
@@ -2087,7 +2087,7 @@ describe('useQuery Hook', () => {
             },
             onError,
           }),
-          query: useQuery(query),
+          query: useQuery1(query),
         }),
         { wrapper },
       );
@@ -2304,7 +2304,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(query, { variables: { id: entityId } }),
+        () => useQuery1(query, { variables: { id: entityId } }),
         { wrapper },
       );
 
@@ -2494,7 +2494,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(carQuery, { variables: { id: 1 } }),
+        () => useQuery1(carQuery, { variables: { id: 1 } }),
         { wrapper },
       );
 
@@ -2700,7 +2700,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(query, { notifyOnNetworkStatusChange: true }),
+        () => useQuery1(query, { notifyOnNetworkStatusChange: true }),
         { wrapper },
       );
 
@@ -2786,7 +2786,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, waitForNextUpdate } = renderHook(
-        () => useQuery(query, { notifyOnNetworkStatusChange: true }),
+        () => useQuery1(query, { notifyOnNetworkStatusChange: true }),
         { wrapper },
       );
 
@@ -2867,7 +2867,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, rerender, waitForNextUpdate } = renderHook(
-        ({ gender }) => useQuery(query, {
+        ({ gender }) => useQuery1(query, {
           variables: { gender },
           fetchPolicy: 'network-only',
         }),
@@ -2954,7 +2954,7 @@ describe('useQuery Hook', () => {
       );
 
       const { result, rerender, waitForNextUpdate } = renderHook(
-        ({ canonizeResults }) => useQuery(query, {
+        ({ canonizeResults }) => useQuery1(query, {
           fetchPolicy: 'cache-only',
           canonizeResults,
         }),
@@ -3034,11 +3034,12 @@ describe('useQuery Hook', () => {
       return new ApolloClient({
         cache: new InMemoryCache,
         link: new ApolloLink(operation => new Observable(observer => {
-          setTimeout(() => {
             switch (operation.operationName) {
               case "A":
-                observer.next({ data: aData });
-                observer.complete();
+                setTimeout(() => {
+                  observer.next({ data: aData });
+                  observer.complete();
+                });
                 break;
               case "B":
                 setTimeout(() => {
@@ -3047,7 +3048,6 @@ describe('useQuery Hook', () => {
                 }, 10);
                 break;
             }
-          });
         })),
       });
     }
@@ -3059,8 +3059,8 @@ describe('useQuery Hook', () => {
       const client = makeClient();
       const { result, waitForNextUpdate } = renderHook(
         () => ({
-          a: useQuery(aQuery, { fetchPolicy: aFetchPolicy }),
-          b: useQuery(bQuery, { fetchPolicy: bFetchPolicy }),
+          a: useQuery1(aQuery, { fetchPolicy: aFetchPolicy }),
+          b: useQuery1(bQuery, { fetchPolicy: bFetchPolicy }),
         }),
         {
           wrapper: ({ children }) => (
